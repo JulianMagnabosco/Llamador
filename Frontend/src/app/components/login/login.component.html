@@ -1,0 +1,56 @@
+<div class="flex justify-center mt-20">
+
+  <div class=" bg-white rounded-md shadow-md w-full max-w-96">
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()"  class="m-4">
+      <div class="text-2xl text-center mt-2">
+        Iniciar Sesión
+      </div>
+      <div class="m-4">
+        <label class="block" for="name">Nombre</label>
+        <input
+          class="p-2 w-full text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-400 focus:border-blue-500"
+          type="text" id="name" formControlName="username"
+          [class.border-red-500]="(form.controls['username'].touched || form.controls['username'].dirty) && form.controls['username'].invalid">
+        <div class="text-red-500 text-sm"
+          *ngIf="(form.controls['username'].touched || form.controls['username'].dirty)">
+          <div *ngIf="form.controls['username'].hasError('required')">
+            Obligatorio.
+          </div>
+          <div *ngIf="form.controls['username'].hasError('maxlength')">
+            El nombre no puede superar los 20 caracteres.
+          </div>
+        </div>
+
+      </div>
+      <div class="m-4">
+        <label class="block" for="password">Contraseña</label>
+        <input
+          class="p-2 w-full text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-400 focus:border-blue-500 "
+          type="password" id="password" formControlName="password" autocomplete="off"
+          [class.border-red-500]="(form.controls['password'].touched || form.controls['password'].dirty) && form.controls['password'].invalid">
+        <div class="text-red-500 text-sm"
+          *ngIf="(form.controls['password'].touched || form.controls['password'].dirty)">
+          <div *ngIf="form.controls['password'].hasError('required')">
+            Obligatorio.
+          </div>
+          <div *ngIf="form.controls['password'].hasError('maxlength')">
+            La contraseña no puede superar los 20 caracteres.
+          </div>
+        </div>
+      </div>
+      <!-- <div class="text-center m-4">
+        <a routerLink="/password"
+          class="text-blue-500 hover:underline hover:decoration-rose-950 cursor-pointer">¿Olvidaste tu contraseña?</a>
+      </div> -->
+
+      <div class="text-center m-4">
+        <button
+          class="bg-blue-500 rounded-md text-white p-2 transition-all hover:brightness-110 disabled:opacity-50"
+          type="submit" [disabled]="form.invalid || loading">        
+          Iniciar Sesión
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

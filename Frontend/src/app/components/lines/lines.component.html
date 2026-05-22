@@ -1,0 +1,58 @@
+<div class="container mx-auto mb-4 mt-10 p-1">
+
+  <div class="text-2xl mb-3">Lineas de tickets</div>
+  <table class="w-full shadow-2xl  overflow-x-auto">
+    <thead>
+      <tr class="bg-gray-300">
+        <th>ID</th>
+        <th>Codigo</th>
+        <th>Nombre</th>
+        <th>Tickets</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody class="border-b-2 border-black">
+      <tr *ngFor="let line of list" class="border-t-2 border-black *:text-center">
+        <td>
+          {{line.id}}
+        </td>
+        <td>
+          {{line.code}}
+        </td>
+        <td>
+          {{line.name}}
+        </td>
+        <td>
+          {{line.tickets.length}}
+        </td>
+        <td class="shrink flex items-center justify-center *:transition-all *:hover:brightness-75">
+          <button (click)="deleteLine(line.id)"
+            class="m-2 cursor-pointer" >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 448 512"
+              fill="red"
+              stroke="blue"
+              class="size-8" >
+              <path
+                d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z"
+              />
+            </svg>
+          </button>
+          <!-- <button (click)="selectUser(item)" class="p-2 text-white bg-blue-500 rounded-xl">
+            EDITAR
+          </button> -->
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  
+  <form class="p-2 shadow-xl mt-3 *:p-2 *:rounded-xl flex justify-center gap-1" (ngSubmit)="addLine()">
+    <span class="text-xl">+ Cargar Nueva Linea: </span>
+    <input class="border-black border-2" placeholder="Codigo" name="code" id="code" [(ngModel)]="newCode" required minlength="2" maxlength="3">
+    <input class="border-black border-2" placeholder="Nombre" name="name" id="name" [(ngModel)]="newName" required minlength="2">
+    <button class="bg-blue-300 disabled:brightness-75" type="submit" 
+    [disabled]="newName=='' || newCode=='' || codes.includes(newCode)">Cargar</button>
+  </form>
+</div>

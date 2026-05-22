@@ -1,0 +1,18 @@
+/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+
+@theme {
+  --animate-colorshift: colorshift 1s ease-in-out infinite;
+  @keyframes colorshift {
+    0%,
+    100% {
+      /* background-color: inherit;
+      color:inherit; */
+    }
+    50% {
+      /* background-color: yellow;
+      color:black; */
+      backdrop-filter: hue-rotate(90deg) brightness(1.2);
+    }
+  }
+}

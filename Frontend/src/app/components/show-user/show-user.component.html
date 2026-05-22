@@ -1,0 +1,22 @@
+<div class="sm:mt-14 m-4" *ngIf="found">
+    <div class="bg-white shadow-xl rounded-md p-4 space-y-3 mx-auto w-max">
+        <div class="text-2xl text-center">
+            Tu Cuenta
+        </div>
+        <div >
+            ID: <span class="text-xl font-bold">{{user.id}}</span>
+        </div>
+        <div >
+        Nombre: <span class="text-xl font-bold">{{user.username}}</span>
+        </div>
+        
+        <div>
+        Admin: <span class="text-xl font-bold">{{user.admin}}</span>
+        </div>
+    </div>
+</div>
+
+<div class="bg-white shadow-xl rounded-md p-8 mt-14" *ngIf="!found">
+    <div class="text-center text-6xl">OOPS!</div>
+    <div class="text-center text-3xl">usero no encontrado</div>
+</div>

@@ -1,0 +1,80 @@
+<div class="my-4 text-center text-4xl">Gestión de Turnos</div>
+<div class="px-4 sm:px-8">
+    <div class="mb-2 bg-gray-200 flex items-center relative
+         divide-black divide-x-2 rounded-xl text-2xl overflow-hidden">
+        <button class=" bg-amber-300 p-4 px-4 enabled:hover:brightness-75" *ngIf="list[0] || calledTicket"
+            (click)="callTicket()" [disabled]="loadingForButton">
+            {{calledTicket?"Volver a llamar":"Llamar"}} turno→
+            <span class="font-bold">{{(calledTicket?.code || list[0].code) +"-"+ (calledTicket?.number ||
+                list[0].number) }}</span>
+
+        </button>
+
+        <button class=" bg-green-300 p-4 px-4 enabled:hover:brightness-75" *ngIf="list[0] && calledTicket"
+            (click)="callNext()" [disabled]="loadingForButton">
+            Siguiente turno→ <span class="font-bold">{{list[0].code+"-"+list[0].number}}</span>
+        </button>
+
+        <button class=" bg-green-300 p-4 px-4 enabled:hover:brightness-75" *ngIf="!list[0] && calledTicket"
+            (click)="callNext()" [disabled]="loadingForButton">
+            Terminar
+        </button>
+        <span class="grow text-center">Turnos pendientes: <span class="font-bold">{{list.length}}</span></span>
+
+        <div *ngIf="loadingForButton"
+            class="opacity-75 bg-black absolute top-0 left-0 w-full h-full flex justify-center items-center pointer-events-none z-10">
+            <svg class=" size-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                </path>
+            </svg>
+        </div>
+    </div>
+    <div [class.invisible]="!calledTicket" class="flex justify-center mb-2">
+        <span class="relative text-4xl p-2 rounded-xl bg-amber-300 text-center ">
+            {{calledTicket?.code+" - "+calledTicket?.number}}
+            <span class="absolute top-0 start-0 p-2 rounded-xl bg-amber-300 text-center animate-ping"
+                [hidden]="audioPaused">
+                {{calledTicket?.code+" - "+calledTicket?.number}}
+            </span>
+        </span>
+    </div>
+    <div [class.invisible]="!hasSelections"
+        class="flex justify-end mb-2 text-2xl text-white *:p-2 *:text-center *:cursor-pointer *:hover:brightness-75">
+        <span class="rounded-s-xl bg-red-500" (click)="deleteSelected()" [hidden]="!admin">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="white" class="size-8 inline">
+                <path
+                    d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z" />
+            </svg> Eliminar seleccionados
+        </span>
+        <span class="rounded-e-xl bg-gray-500" (click)="cancelSelected()">
+            Cancelar
+        </span>
+    </div>
+    <div class="divide-black divide-y-2 bg-gray-200">
+        <div class="text-2xl p-2  hover:bg-gray-400 relative flex justify-between hover:*:last:inline select-none"
+            [class]="{'bg-gray-300':ticket.selected}" *ngFor="let ticket of list; index as i">
+            <div (click)="selectTicket($event,ticket)" [class]="{'font-bold':ticket.selected}">
+                <span [hidden]="!ticket.selected">✓</span>
+                {{ticket.code+" - "+ticket.number}}
+                <span [hidden]="i!=0">→Siguiente→</span>
+            </div>
+            <div class="text-gray-500 italic ">
+                <span class="text-base">{{ticket.date | date:"dd MMM"}} </span> {{ticket.date | date:"HH:mm:ss"}}
+            </div>
+            <button class="absolute top-0 end-0 p-2 px-4 bg-red-500 hidden hover:brightness-75" [hidden]="!admin"
+                (click)="deleteTicket(ticket.id)">X</button>
+        </div>
+    </div>
+</div>
+
+
+<div class="fixed p-2 top-0 left-0 w-full h-full flex justify-center items-center overflow-y-auto bg-gray-500/75 z-10"
+    [hidden]="!loading">
+    <div class="bg-white rounded-xl p-2 opacity-100">
+        <div class="text-center text-4xl m-2">Cargando...</div>
+
+    </div>
+</div>

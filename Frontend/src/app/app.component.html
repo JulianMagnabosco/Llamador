@@ -1,0 +1,52 @@
+<div class="bg-white">
+
+  <header class="sticky top-0 z-50 bg-blue-500">
+    <nav class="flex items-center justify-between p-4" aria-label="Global">
+      <a class="ms-1 text-xl text-cyan-300 pe-3 py-3" href="#" onClick="window.location.reload();">Turnos</a>
+
+      <div class="flex md:gap-x-8 gap-x-4 place-items-center *:text-center
+      *:text-sm *:font-semibold *:leading-6 *:text-white *:hover:underline *:decoration-4 *:underline-offset-4">
+
+        <a [routerLink]="['/display']">Pantalla</a>
+
+
+        <ng-container *ngIf="this.service.user">
+          <a [routerLink]="['/manage']">Tickets</a>
+
+          <ng-container *ngIf="this.service.user.admin">
+            <!-- <a [routerLink]="['/register']">Registrar usuario</a> -->
+
+            <a [routerLink]="['/users']">Usuarios</a>
+
+            <a [routerLink]="['/lines']">Lineas de Ticket</a>
+
+            
+            <a [routerLink]="['/tickets']">Todos los tickets</a>
+  
+          </ng-container>
+
+          <a [routerLink]="['/showuser']" class="bg-blue-400 rounded-2xl px-2">{{"@"+service.user.username}}</a>
+          
+          <a [routerLink]="['/about']">Acerca De</a>
+
+          <button class="cursor-pointer" (click)="logout()">Salir </button>
+
+        </ng-container>
+
+        <ng-container *ngIf="!this.service.user">
+          
+          <a [routerLink]="['/about']">Acerca De</a>
+
+          <a [routerLink]="['/login']">Iniciar Sesión </a>
+
+        </ng-container>
+
+      </div>
+    </nav>
+
+  </header>
+
+  <div class="relative">
+    <router-outlet></router-outlet>
+  </div>
+</div>

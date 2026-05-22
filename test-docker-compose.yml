@@ -1,0 +1,28 @@
+services:
+  db:
+    container_name: db
+    image: postgres:17
+    networks:
+      - app-network
+    volumes:
+      - test_db_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=admin
+    restart: always
+    ports:
+      - 5432:5432
+      
+  redis_db:
+    container_name: redis_db
+    image: redis:7
+    networks:
+      - app-network
+    ports:
+      - 6379:6379
+    restart: always
+
+volumes:
+  test_db_data:
+
+networks:
+  app-network:
