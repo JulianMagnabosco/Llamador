@@ -6,25 +6,15 @@
         </div>
         <div class="bg-cyan-700 text-6xl p-2 text-white text-center">{{datetime | date:"dd/MM/yyyy HH:mm"}}</div>
     </div>
-    <div class="col-span-3 h-[calc(100svh-10rem)] overflow-hidden text-white font-bold">
+    <div class="col-span-2 h-[calc(100svh-10rem)] overflow-hidden text-white font-bold">
         <div class="flex *:p-3 text-6xl">
             <div class="w-2/5 text-end bg-gray-500 uppercase">TURNO</div>
             <div class="w-3/5 text-start bg-gray-400 uppercase">PUESTO</div>
         </div>
-        <div class="bg-red-500 font-extrabold ">
-            <div class="flex *:p-3 text-6xl relative border-t-2 border-black" *ngFor="let ticket of calledList">
-                <div class="w-2/5 text-end">{{ticket.code+" - "+ticket.number}}</div>
-                <div class="w-3/5 text-start bg-red-400 uppercase">{{ticket.user||" ."}}</div>
-
-                <div class="absolute z-50 top-0 start-0 w-full h-full animate-colorshift"
-                    [style.animation-iteration-count]="soundTimer" 
-                    style="animation-fill-mode: forwards">
-                </div>
-        </div>
         <div class="bg-blue-400">
-            <div class="flex *:p-3 text-6xl relative border-t-2 border-black" *ngFor="let ticket of list">
-                <div class="w-2/5 text-end">{{ticket.code+" - "+ticket.number}}</div>
-                <div class="w-3/5 text-start bg-blue-300 uppercase"> {{ticket.user||" ."}}</div>
+            <div class="flex *:p-3 text-6xl relative border-t-2 border-black" *ngFor="let patientCall of list">
+                <div class="w-2/5 text-end">{{patientCall.patient}}</div>
+                <div class="w-3/5 text-start bg-blue-300 uppercase"> {{patientCall.user||" ."}}</div>
             </div>
         </div>
     </div>

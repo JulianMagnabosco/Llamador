@@ -5,7 +5,7 @@ from django.shortcuts import aget_object_or_404
 from asgiref.sync import sync_to_async
 from django.contrib.auth.models import User
 
-from .models import Line,Ticket
+from .models import PatientCall
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -35,28 +35,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             return
         
         if message["type"]=="add" :
-            line = await aget_object_or_404(Line,code=message["code"])
-            list = line.getTickets()
-            totem = message["totem"]
-
-            lastTicket = await sync_to_async(list.last)()
-            lastTicketNumber = lastTicket.number if not lastTicket is None else 99
-            newNumber = lastTicketNumber+1 if lastTicketNumber<99 else 1
-            await Ticket.asave(Ticket(number=newNumber,line=line,totem=totem))
+            await PatientCall.asave(PatientCall(user=user,patient=message["patient"]))
             
-        elif message["type"]=="call":
-            ticket = await aget_object_or_404(Ticket,pk=message["id"])
-            ticket.user = user
-            await Ticket.asave(ticket)
-
-        elif message["type"]=="del":
-            ticket = await aget_object_or_404(Ticket,pk=message["id"])
-            await Ticket.adelete(ticket)
-
-        elif message["type"]=="dellist" :
-            for t in message["tickets"]:
-                ticket = await aget_object_or_404(Ticket,pk=t["id"])
-                await Ticket.adelete(ticket)
 
         await self.getAll()
 
@@ -75,9 +55,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def getAll(self):
     # if not request.user.is_authenticated:
     #     return JsonResponse({"login": False},status=401)
-        username = self.scope["user"].username
+        # username = self.scope["user"].username
         # print(self.scope["user"].is_superuser)
-        listRaw0 = Ticket.objects.select_related("user").select_related("line").filter(user=None).order_by("date")
+        listRaw0 = PatientCall.objects.select_related("user").filter(user=None).order_by("date")
 
         # if not self.scope["user"].is_superuser:
         #     listRaw1 = listRaw0.filter(line__users__username=username).all() 

@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription,timer } from 'rxjs';
-import { TicketList } from '../../models/ticket-list';
 import { TicketsService } from '../../services/tickets.service';
 import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { Ticket } from '../../models/ticket';
+import { PatientCall } from '../../models/patient-call';
 import { WebSocketService } from '../../services/web-socket.service';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from '../../../environments/environment';
@@ -20,11 +19,10 @@ export class DisplayListComponent implements OnInit, OnDestroy {
 
   fullscreen=false
 
-  calledList:Ticket[]=[];
-  list: Ticket[] = [
-    // new TicketList([new Ticket(),new Ticket(),new Ticket()],"CO","CO"),
-    // new TicketList([new Ticket(),new Ticket(),new Ticket()],"P","Pediatria"),
-    // new TicketList([new Ticket(),new Ticket(),new Ticket()],"C","Clinica"),
+  list: PatientCall[] = [
+    // new TicketList([new PatientCall(),new PatientCall(),new PatientCall()],"CO","CO"),
+    // new TicketList([new PatientCall(),new PatientCall(),new PatientCall()],"P","Pediatria"),
+    // new TicketList([new PatientCall(),new PatientCall(),new PatientCall()],"C","Clinica"),
   ];
   lines: string[]=[]
   notShowlines: string[]=[]
@@ -109,27 +107,11 @@ export class DisplayListComponent implements OnInit, OnDestroy {
   }
 
   _callticket(data: any) {
-    const inlist = (this.lines.length !=0 && !this.lines.includes(data['code']));
 
-    const notinlist = (this.notShowlines.length !=0 && this.notShowlines.find((l)=> l==data['code'] ));
-
-    if(inlist || notinlist){
-      console.log("No se muestra la linea")
-      return
+    let newSize = this.list.unshift(new PatientCall(data['patient'],data['user']))
+    if(newSize>10){
+      this.list.pop()
     }
-    
-    this.calledList=this.calledList.filter((t)=>{
-      const match = t.user!=data['user']
-      if(match) return true
-      
-      this.list.unshift(new Ticket(t['code'],t['number'],t['user']))
-      return false
-    })
-
-    this.list=this.list.filter((t)=>{
-      return !(t.code==data['code'] && t.number==data['number'])
-    })
-    this.calledList.unshift(new Ticket(data['code'],data['number'],data['user']))
     this.playSound();
     
     clearTimeout(this.timeout);
@@ -155,23 +137,4 @@ export class DisplayListComponent implements OnInit, OnDestroy {
     }
   }
 
-  // saveData(data: any) {
-  //   let givenList: Ticket[] = data;
-  //   let newList: Ticket[] = [];
-  //   givenList.forEach((ticket) => {
-  //     let findTicket = this.list.find((e) => {
-  //       return e.id == ticket.id;
-  //     });
-  //     if(findTicket){
-  //       ticket.selected=findTicket.selected
-  //     }
-  //     const inlist =    (this.lines.length ==0        || this.lines.find((l)=> l==ticket.code ));
-  //     const innotlist = (this.notShowlines.length ==0 || !this.notShowlines.find((l)=> l==ticket.code ));
-      
-  //     if(inlist && innotlist){
-  //       newList.push(ticket)
-  //     }
-  //   });
-  //   this.list=newList;
-  // }
 }
