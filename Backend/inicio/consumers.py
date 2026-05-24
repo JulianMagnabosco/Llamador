@@ -34,8 +34,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({"type": "chat.message", "message": errorMessage}))
             return
         
-        if message["type"]=="add" :
-            await PatientCall.asave(PatientCall(user=user,patient=message["patient"]))
+        # if message["type"]=="add" :
+        #     await PatientCall.asave(PatientCall(user=user,patient=message["patient"]))
             
 
         await self.getAll()

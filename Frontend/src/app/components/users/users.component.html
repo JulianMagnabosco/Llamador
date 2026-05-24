@@ -23,14 +23,7 @@
             <td>
               {{ item.admin?"SI":"NO" }}
             </td>
-            <td class="max-w-20 overflow-hidden">
-              <div class="flex flex-wrap justify-center">
-                <span class="p-1 px-1" *ngFor="let line of item.lines; index as i">
-                  <span class="underline text-nowrap p-1 bg-blue-200 rounded-xl">{{line.name}}</span>
-                  <!-- {{i!=item.lines.length-1?"-":""}} -->
-                </span>
-              </div>
-            </td>
+            
             <td class="p-1 ">
               <div class="flex items-center justify-center h-full space-x-1 *:transition-all *:hover:brightness-75">
                 <button (click)="deleteUser(item.id)" class="p-2 h-full cursor-pointer rounded-xl bg-red-500">
@@ -80,17 +73,5 @@
     <div class="text-center m-2">Seleccione las lineas de tickets accesibles por este usuario
       ({{selectedUser.username}})</div>
 
-    <div class="flex flex-wrap justify-center border-black border-2 m-2 max-w-xl rounded-xl
-        *:bg-blue-300 *:rounded-xl *:cursor-pointer *:p-2 *:me-1 *:my-1">
-      <div *ngFor="let item of lines" [class.brightness-75]="item.selected" [class.font-bold]="item.selected"
-        (click)="selectLine(item)">
-        <span [hidden]="!item.selected">✓</span>
-        {{item.name}}
-      </div>
-    </div>
-    <div class="flex justify-between *:p-2 *:rounded-xl *:hover:brightness-75 *:cursor-pointer">
-      <button class="bg-cyan-300" (click)="applylines()">Guardar lineas</button>
-      <button type="submit" class="bg-gray-300" (click)="selectedUser=undefined">Cancelar</button>
-    </div>
   </div>
 </div>

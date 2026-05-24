@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription,timer } from 'rxjs';
-import { TicketsService } from '../../services/tickets.service';
+import { PatientCallsService } from '../../services/patientcalls.service';
 import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { PatientCall } from '../../models/patient-call';
 import { WebSocketService } from '../../services/web-socket.service';
@@ -20,26 +20,25 @@ export class DisplayListComponent implements OnInit, OnDestroy {
   fullscreen=false
 
   list: PatientCall[] = [
-    // new TicketList([new PatientCall(),new PatientCall(),new PatientCall()],"CO","CO"),
-    // new TicketList([new PatientCall(),new PatientCall(),new PatientCall()],"P","Pediatria"),
-    // new TicketList([new PatientCall(),new PatientCall(),new PatientCall()],"C","Clinica"),
   ];
-  lines: string[]=[]
-  notShowlines: string[]=[]
-  audio = new Audio('music.mp3');
-  audioPaused=true
+  calledList: PatientCall[] = [
+    new PatientCall("JUAN PEREZ","Caja 1"),
+  ];
+  
+  audio = new Audio();
+  processing = false;
+  patientCall?: PatientCall;
 
   timeout: any;
-  soundTimer = environment.soundTimeout;
+  soundTimer = 500; 
 
   datetime=new Date();
   constructor(
-    private service: TicketsService,
+    private service: PatientCallsService,
     private webSocket: WebSocketService,
     private route: ActivatedRoute
   ) {}
   ngOnInit(): void {
-    this.audio.loop=true
     this.charge();
   }
 
@@ -47,6 +46,7 @@ export class DisplayListComponent implements OnInit, OnDestroy {
 
     this.subs.unsubscribe();
   }
+
   charge() {
     this.subs.add(timer(0,1000).subscribe({
       next: (value)=>{
@@ -54,17 +54,9 @@ export class DisplayListComponent implements OnInit, OnDestroy {
       }
     }))
     this.loading = true;
-    this.subs.add(this.route.queryParams.subscribe({
-      next:(value)=> {
-        if(value["lines"]){
-          this.lines= value["lines"].toUpperCase().split(",");
-        }
-        if(value["notlines"]){
-          this.notShowlines= value["notlines"].toUpperCase().split(",");
-        }
-        // this.startHTTP()
-      },
-    }))
+    
+    this.startProcessing();
+
     this.startWS()
 
   }
@@ -94,9 +86,9 @@ export class DisplayListComponent implements OnInit, OnDestroy {
           if (value['message']['type'] == 'update') {
             // this.saveData(value['message']['data']);
           } else if (value['message']['type'] == 'call') {
-            this._callticket(value['message']);
-            console.log("call")
+            this.list.push(value['message']['data']);
           }
+          console.log(value)
         },
         error: (err) => {
           console.error("Reintentando")
@@ -106,35 +98,53 @@ export class DisplayListComponent implements OnInit, OnDestroy {
     );
   }
 
-  _callticket(data: any) {
-
-    let newSize = this.list.unshift(new PatientCall(data['patient'],data['user']))
-    if(newSize>10){
-      this.list.pop()
-    }
-    this.playSound();
-    
-    clearTimeout(this.timeout);
-    this.timeout = setTimeout(() => {
-      this.stopSound();
-    }, this.soundTimer * 1000);
-  }
-
-  playSound(){
-    try{
-      this.audio.play();
-      this.audioPaused=false
-    }catch{
-      console.error("Error de audio")
+  async startProcessing() {
+    while (true) {
+      if (!this.processing && this.list.length > 0) {
+        this.patientCall = this.list.shift()!;
+        this.calledList.push(this.patientCall);
+        this.processing = true;
+        await this.downloadAndPlayAudio(this.patientCall);
+        this.processing = false;
+      }
+      await this.delay(500); // Espera medio segundo entre chequeos
     }
   }
-  stopSound(){
-    try{
-      this.audio.pause();
-      this.audioPaused=true
-    }catch{
-      console.error("Error de audio")
-    }
+
+  async downloadAndPlayAudio(data: PatientCall): Promise<void> {
+    const text = `Llamando a ${data.patient} al consultorio ${data.user}`;
+    let attempts = 3;
+    return new Promise<void>((resolve) => {
+      this.service.getTextToSpeech(text).subscribe({
+        next: (blob) => {
+          const audioUrl = URL.createObjectURL(blob);
+          const audio = new Audio(audioUrl);
+          audio.onended = () => {
+            attempts--;
+            if (attempts == 0) {
+              URL.revokeObjectURL(audioUrl); // liberar memoria
+              resolve();
+            }
+            else {
+              audio.play(); // Reproducir de nuevo
+            }
+          };
+          audio.onerror = () => {
+            console.error('Error al reproducir audio');
+            resolve();
+          };
+          audio.play();
+        },
+        error: (err) => {
+          console.error('Error al descargar audio:', err);
+          resolve();
+        },
+      });
+    });
+  }
+
+  delay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
 }

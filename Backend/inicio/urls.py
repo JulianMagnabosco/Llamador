@@ -17,4 +17,6 @@ urlpatterns = [
     path("api/addcall/", views.addCall),
     path("api/getcalls/", views.getCalls),
     path("api/dellcall/<int:id>/", views.dellCall),
+
+    path("api/tts/", views.tts),
 ]

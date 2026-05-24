@@ -16,6 +16,34 @@ from asgiref.sync import async_to_sync
 from .models import PatientCall
 import json
 
+from piper.voice import PiperVoice
+import soundfile as sf
+import numpy as np
+import io
+
+
+MODEL_PATH = "./tts_models/es_ES-davefx-medium.onnx"  # Cambiar por ruta real
+
+voice = PiperVoice.load(MODEL_PATH)
+
+#TTS
+def tts(request):
+    text = request.GET.get('text')  # Get a single value
+    if not text:
+        return JsonResponse({'error': 'Falta el texto'})
+
+    # Generar audio y extraer datos desde AudioChunk
+    chunks = list(voice.synthesize(text))
+    audio_data = np.concatenate([chunk.audio_float_array for chunk in chunks])  # .data es ndarray de float32
+
+    # Guardar en WAV en memoria
+    buffer = io.BytesIO()
+    sf.write(buffer, audio_data, voice.config.sample_rate, format='WAV', subtype='PCM_16')
+    buffer.seek(0)
+
+    response = HttpResponse(buffer, content_type="audio/wav")
+    response["Content-Disposition"] = 'inline; filename="voz.wav"'
+    return response
 
 #WebSocket
 def trigger_mensaje(request):
@@ -155,7 +183,18 @@ def addCall(request):
         
         newCall = PatientCall(user=user,patient=body["patient"])
         newCall.save()
-        getCalls(request)
+        
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            "chat_lobby",
+            {
+                "type": "chat.message", 
+                "message": {
+                    "data": newCall.json(),
+                    "type": "call"
+                }
+            }
+        )
         return JsonResponse({"date": newCall.date,"patient": newCall.patient})
     return getCalls(request)
 
@@ -168,3 +207,4 @@ def dellCall(request,id):
         call = get_object_or_404(PatientCall,pk=id)
         PatientCall.delete(call)
     return getCalls(request)
+

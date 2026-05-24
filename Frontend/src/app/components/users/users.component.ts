@@ -6,8 +6,6 @@ import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user';
-import { TicketList } from '../../models/ticket-list';
-import { TicketsService } from '../../services/tickets.service';
 import { RegisterComponent } from "../register/register.component";
 
 
@@ -21,7 +19,6 @@ import { RegisterComponent } from "../register/register.component";
 export class UsersComponent implements OnInit,OnDestroy{
 
   users:User[]=[];
-  lines:TicketList[]=[];
 
   subs:Subscription=new Subscription;
   selectedUser:User|undefined;
@@ -29,7 +26,7 @@ export class UsersComponent implements OnInit,OnDestroy{
   password=""
   newPassword=""
 
-  constructor(private service:UserService, private authService:AuthService ,private ticketService:TicketsService ){
+  constructor(private service:UserService, private authService:AuthService){
   }
   
   ngOnInit(): void {
@@ -41,16 +38,8 @@ export class UsersComponent implements OnInit,OnDestroy{
   }
   selectUser(user:User){
     this.selectedUser=user
-    this.lines.forEach((t)=>{
-      const lu = user.lines.find((lu)=>lu.code==t.code)
-      t.selected=!!lu
-    })
   }
 
-  selectLine(line:TicketList){
-    line.selected=!line.selected
-    console.log("ad")
-  }
 
   savePassword(){
     const data = {
@@ -74,29 +63,7 @@ export class UsersComponent implements OnInit,OnDestroy{
     }))
   }
 
-  applylines(){
-    if(!this.selectedUser) return
-    const data={
-      lines: this.lines.map((l)=>{
-        return {selected:l.selected,code:l.code}
-      }),
-      user: this.selectedUser?.id
-    }
-    this.subs.add(
-      this.ticketService.setLines(data).subscribe(
-        {
-          next: value => {
-            alert("Exito")
-            this.selectedUser=undefined
-            this.charge()
-          },
-          error: err => {
-            alert("Error "+ err.status+":" + err.message );
-          }
-        }
-      )
-    );
-  }
+
 
   charge(){
     this.subs.add(
@@ -112,18 +79,6 @@ export class UsersComponent implements OnInit,OnDestroy{
       )
     );
     
-    this.subs.add(
-      this.ticketService.getLines().subscribe(
-        {
-          next: value => {
-            this.lines=value["data"]
-          },
-          error: err => {
-            alert("Error "+ err.status+":" + err.message );
-          }
-        }
-      )
-    );
   }
 
 

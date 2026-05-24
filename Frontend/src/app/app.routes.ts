@@ -8,6 +8,7 @@ import { UsersComponent } from './components/users/users.component';
 import { ShowUserComponent } from './components/show-user/show-user.component';
 import { DisplayListComponent } from './components/display-list/display-list.component';
 import { AboutComponent } from './components/about/about.component';
+import { MakeCallComponent } from './components/make-call/make-call.component';
 
 export const routes: Routes = [
     {path:"",component:HomeComponent},
@@ -17,7 +18,7 @@ export const routes: Routes = [
     {path:"about",component:AboutComponent, title:"Acerca De"},
 
     {path:"showuser",component:ShowUserComponent, title:"Mi usuario", canActivate:[authGuard]},
-    {path:"showuser",component:ShowUserComponent, title:"Nuevo Llamado", canActivate:[authGuard]},
+    {path:"makecall",component:MakeCallComponent, title:"Nuevo Llamado", canActivate:[authGuard]},
     // {path:"register",component:RegisterComponent, title:"Registo", canActivate:[authGuardAdmin]},
     {path:"users",component:UsersComponent, title:"Usuarios", canActivate:[authGuardAdmin]},
 

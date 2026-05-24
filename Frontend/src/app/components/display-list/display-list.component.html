@@ -6,15 +6,19 @@
         </div>
         <div class="bg-cyan-700 text-6xl p-2 text-white text-center">{{datetime | date:"dd/MM/yyyy HH:mm"}}</div>
     </div>
-    <div class="col-span-2 h-[calc(100svh-10rem)] overflow-hidden text-white font-bold">
+    <div class="col-span-3 h-[calc(100svh-10rem)] overflow-hidden text-white font-bold">
         <div class="flex *:p-3 text-6xl">
-            <div class="w-2/5 text-end bg-gray-500 uppercase">TURNO</div>
-            <div class="w-3/5 text-start bg-gray-400 uppercase">PUESTO</div>
+            <div class="w-3/5 text-end bg-gray-500 uppercase">PACIENTE</div>
+            <div class="w-2/5 text-start bg-gray-400 uppercase">PUESTO</div>
         </div>
         <div class="bg-blue-400">
             <div class="flex *:p-3 text-6xl relative border-t-2 border-black" *ngFor="let patientCall of list">
-                <div class="w-2/5 text-end">{{patientCall.patient}}</div>
-                <div class="w-3/5 text-start bg-blue-300 uppercase"> {{patientCall.user||" ."}}</div>
+                <div class="w-3/5 text-end bg-red-400">{{patientCall.patient}}</div>
+                <div class="w-2/5 text-start bg-red-300 uppercase"> {{patientCall.user||" ."}}</div>
+            </div>
+            <div class="flex *:p-3 text-6xl relative border-t-2 border-black" *ngFor="let patientCall of calledList">
+                <div class="w-3/5 text-end">{{patientCall.patient}}</div>
+                <div class="w-2/5 text-start bg-blue-300 uppercase"> {{patientCall.user||" ."}}</div>
             </div>
         </div>
     </div>

@@ -1,6 +1,6 @@
-# Turnero
+# Llamador
 
-Turnero para una clinica
+Llamador de pacientes para una clinica
 
 ## Requisitos
 
@@ -34,5 +34,3 @@ Turnero para una clinica
 ## Entrar
 - Normal: http://direccion:4200/
 - Display: http://direccion:4200/display
-  - Limitar a lineas: http://direccion:4200/display?lines=C,S
-  - Excluir lineas: http://direccion:4200/display?notlines=C,S
