@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { NgIf } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PatientCallsService } from '../../services/patientcalls.service';
 
 @Component({
@@ -17,14 +17,24 @@ export class MakeCallComponent implements OnInit,OnDestroy{
   loading=false
   form: FormGroup;
 
-  constructor(private fb: FormBuilder, protected service: PatientCallsService, private router: Router) {
+  constructor(private fb: FormBuilder, protected service: PatientCallsService,
+    private router: Router, private route: ActivatedRoute) {
     this.form = this.fb.group({
-      patient: ["", [Validators.required, Validators.maxLength(20)]]
+      patient: ["", [Validators.required, Validators.maxLength(200)]],
+      room: ["", [Validators.required, Validators.maxLength(200)]]
     });
 
   }
 
   ngOnInit(): void {
+    this.subs.add(
+      this.route.queryParams.subscribe(params => {
+        if(params["room"]){
+          this.form.controls['room'].setValue(params["room"])
+        }
+      })
+    )
+    
     this.form.updateValueAndValidity()
   }
 
@@ -39,13 +49,16 @@ export class MakeCallComponent implements OnInit,OnDestroy{
     }
     this.loading=true
     let data = {
-      "patient": this.form.value['patient'].toUpperCase()
+      "patient": this.form.value['patient'].toUpperCase(),
+      "room": this.form.value['room'].toUpperCase()
     }
     this.subs.add(
       this.service.addCall(data).subscribe(
         {
           next: value => {
-            this.form.reset()
+            this.form.patchValue({
+              patient: ''
+            });
             alert("Llamado creado con exito")
             this.loading=false
           },

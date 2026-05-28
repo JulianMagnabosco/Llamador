@@ -102,7 +102,7 @@ export class DisplayListComponent implements OnInit, OnDestroy {
     while (true) {
       if (!this.processing && this.list.length > 0) {
         this.patientCall = this.list.shift()!;
-        this.calledList.push(this.patientCall);
+        this.calledList.unshift(this.patientCall);
         this.processing = true;
         await this.downloadAndPlayAudio(this.patientCall);
         this.processing = false;
@@ -112,7 +112,7 @@ export class DisplayListComponent implements OnInit, OnDestroy {
   }
 
   async downloadAndPlayAudio(data: PatientCall): Promise<void> {
-    const text = `Llamando a ${data.patient} al consultorio ${data.user}`;
+    const text = `Llamando a ${data.patient} al consultorio ${data.room}`;
     let attempts = 3;
     return new Promise<void>((resolve) => {
       this.service.getTextToSpeech(text).subscribe({

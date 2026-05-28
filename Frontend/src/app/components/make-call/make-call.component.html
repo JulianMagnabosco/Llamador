@@ -7,6 +7,24 @@
         Llamar a Paciente
       </div>
       <div class="m-4">
+        <label class="block" for="name">Habitacion</label>
+        <input
+          class="p-2 w-full text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-400 focus:border-blue-500"
+          type="text" id="name" formControlName="room" readonly
+          [class.border-red-500]="(form.controls['room'].touched || form.controls['room'].dirty) && form.controls['room'].invalid">
+        <div class="text-red-500 text-sm"
+          *ngIf="(form.controls['room'].touched || form.controls['room'].dirty)">
+          <div *ngIf="form.controls['room'].hasError('required')">
+            Obligatorio.
+          </div>
+          <div *ngIf="form.controls['room'].hasError('maxlength')">
+            La habitacion no puede superar los 200 caracteres.
+          </div>
+        </div>
+
+      </div>
+
+      <div class="m-4">
         <label class="block" for="name">Nombre</label>
         <input
           class="p-2 w-full text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-400 focus:border-blue-500"

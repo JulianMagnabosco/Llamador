@@ -179,9 +179,9 @@ def getCalls(request):
 def addCall(request):
     if request.method == "POST":
         body = json.loads(request.body)
-        user = get_object_or_404(User,pk=request.user.id)
+        # user = get_object_or_404(User,pk=request.user.id)
         
-        newCall = PatientCall(user=user,patient=body["patient"])
+        newCall = PatientCall(room=body["room"],patient=body["patient"])
         newCall.save()
         
         channel_layer = get_channel_layer()

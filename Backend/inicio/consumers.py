@@ -1,4 +1,5 @@
 import json
+from time import timezone
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.shortcuts import aget_object_or_404
@@ -26,13 +27,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
 
-        username = self.scope["user"].username
-        try:
-            user = await aget_object_or_404(User,username=username)
-        except:
-            errorMessage = {"type":"error","code":401,"message":"User not authenticated"}
-            await self.send(text_data=json.dumps({"type": "chat.message", "message": errorMessage}))
-            return
+        # username = self.scope["user"].username
+        # try:
+        #     user = await aget_object_or_404(User,username=username)
+        # except:
+        #     errorMessage = {"type":"error","code":401,"message":"User not authenticated"}
+        #     await self.send(text_data=json.dumps({"type": "chat.message", "message": errorMessage}))
+        #     return
         
         # if message["type"]=="add" :
         #     await PatientCall.asave(PatientCall(user=user,patient=message["patient"]))
@@ -53,15 +54,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({"message": message}))
         
     async def getAll(self):
-    # if not request.user.is_authenticated:
-    #     return JsonResponse({"login": False},status=401)
-        # username = self.scope["user"].username
-        # print(self.scope["user"].is_superuser)
-        listRaw0 = PatientCall.objects.select_related("user").filter(user=None).order_by("date")
-
-        # if not self.scope["user"].is_superuser:
-        #     listRaw1 = listRaw0.filter(line__users__username=username).all() 
-        # else:
+        
+        today = timezone.localdate()
+        listRaw0 = PatientCall.objects.filter(date__date=today).order_by("date")
         listRaw1 = listRaw0.all() 
 
         listValues=list()

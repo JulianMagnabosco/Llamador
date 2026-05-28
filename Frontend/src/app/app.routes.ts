@@ -16,9 +16,9 @@ export const routes: Routes = [
     // {path:"password",component:PasswordComponent, title:"Cambiar Contraseña"},
     {path:"display",component:DisplayListComponent, title:"Mostrar"},
     {path:"about",component:AboutComponent, title:"Acerca De"},
+    {path:"makecall",component:MakeCallComponent, title:"Nuevo Llamado"},
 
     {path:"showuser",component:ShowUserComponent, title:"Mi usuario", canActivate:[authGuard]},
-    {path:"makecall",component:MakeCallComponent, title:"Nuevo Llamado", canActivate:[authGuard]},
     // {path:"register",component:RegisterComponent, title:"Registo", canActivate:[authGuardAdmin]},
     {path:"users",component:UsersComponent, title:"Usuarios", canActivate:[authGuardAdmin]},
 

@@ -2,11 +2,11 @@ import { User } from './user';
 export class PatientCall {
   id=0;
   patient="";
-  user="";
+  room="";
   date="";
 
-  constructor(patient:string,user:string=""){
+  constructor(patient:string,room:string=""){
     this.patient=patient
-    this.user=user
+    this.room=room
   }
 }
