@@ -31,7 +31,7 @@ COPY ./turnero /app/turnero
 COPY ./inicio /app/inicio
 
 COPY manage.py /app/
-COPY initdata.json /app/
+# COPY initdata.json /app/
  
 # Expose the Django port
 EXPOSE 3000
