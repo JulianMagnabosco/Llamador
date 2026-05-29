@@ -1,5 +1,5 @@
 # Use the official Python runtime image
-FROM python:3.13-alpine
+FROM python:3.13-slim
  
 # Create the app directory
 RUN mkdir /app
@@ -13,8 +13,13 @@ ENV PYTHONDONTWRITEBYTECODE=1
 #Prevents Python from buffering stdout and stderr
 ENV PYTHONUNBUFFERED=1 
 
-RUN apk update && \
-    apk add musl-dev libpq-dev gcc
+### IF ALPINE image
+# RUN apk update && \
+    # apk add musl-dev libpq-dev gcc
+
+### IF SLIM image
+RUN apt-get update \
+    && apt-get -y install libpq-dev gcc
  
 # Upgrade pip
 RUN pip install --upgrade pip 
@@ -29,6 +34,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # COPY . /app/
 COPY ./turnero /app/turnero
 COPY ./inicio /app/inicio
+COPY ./tts_models /app/tts_models
 
 COPY manage.py /app/
 # COPY initdata.json /app/

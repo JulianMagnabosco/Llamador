@@ -91,7 +91,7 @@ export class DisplayListComponent implements OnInit, OnDestroy {
           console.log(value)
         },
         error: (err) => {
-          console.error("Reintentando")
+          console.error(err)
           this.charge()
         },
       })
